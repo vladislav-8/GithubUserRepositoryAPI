@@ -33,6 +33,8 @@ class ViewHolder(parent: ViewGroup) :
     var name_company: TextView = itemView.findViewById(R.id.text_company)
     var name_logo: ImageView = itemView.findViewById(R.id.image_cover)
     var text_zp: TextView = itemView.findViewById(R.id.text_zp)
+    var language: TextView = itemView.findViewById(R.id.language)
+    var default_branch: TextView = itemView.findViewById(R.id.default_branch)
 
     fun bind(model: GithubApiModelItem) {
         Glide.with(itemView)
@@ -42,7 +44,12 @@ class ViewHolder(parent: ViewGroup) :
 
         name_company.text = model.name
         text_zp.text = model.full_name
-        Log.d("adapter", model.name)
-        Log.d("adapter", model.full_name)
+        language.text = "language: ${model.language.toString()}"
+        default_branch.text = "default branch: ${model.default_branch}"
+
+        if (language.text.equals("language: null")) {
+            language.text = "it have some languages"
+        }
+
     }
 }
