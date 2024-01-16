@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                     vacancies.clear()
                     vacancies.addAll(list)
                     myAdapter.notifyDataSetChanged()
+                    Log.d("TAG", "$vacancies")
                 }
             }
         }

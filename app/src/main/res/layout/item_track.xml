@@ -33,5 +33,17 @@
             android:layout_height="wrap_content"
             tools:text="vladislav-8/android-contacts-lists-lab" />
 
+        <TextView
+            android:id="@+id/language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="language: kotlin"/>
+
+        <TextView
+            android:id="@+id/default_branch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="default branch: main"/>
+
     </LinearLayout>
 </LinearLayout>

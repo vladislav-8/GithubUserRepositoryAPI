@@ -44,7 +44,7 @@ data class GithubApiModelItem(
     val issues_url: String,
     val keys_url: String,
     val labels_url: String,
-    val language: Any,
+    val language: Any?,
     val languages_url: String,
     val merges_url: String,
     val milestones_url: String,
