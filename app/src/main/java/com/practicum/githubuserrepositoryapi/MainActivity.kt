@@ -12,6 +12,9 @@ import com.practicum.githubuserrepositoryapi.data.GithubApi
 import com.practicum.githubuserrepositoryapi.databinding.ActivityMainBinding
 import com.practicum.githubuserrepositoryapi.domain.GithubApiModelItem
 import com.practicum.githubuserrepositoryapi.presentation.ReposAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,10 +22,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
-
-    private val binding: ActivityMainBinding by lazy {
-        ActivityMainBinding.inflate(layoutInflater)
-    }
 
     val baseUrl = "https://api.github.com/"
 
@@ -67,30 +66,14 @@ class MainActivity : AppCompatActivity() {
 
     fun search() {
         if (editText.text.isNotEmpty()) {
-            hhApi.getVacancies(editText.text.toString()).enqueue(object :
-                Callback<List<GithubApiModelItem>> {
-                override fun onResponse(call: Call<List<GithubApiModelItem>>,
-                                        response: Response<List<GithubApiModelItem>>
-                ) {
-                    if (response.code() == 200) {
-                        vacancies.clear()
-                        if (response.body()?.isNotEmpty() == true) {
-                            vacancies.addAll(response.body()!!)
-                            myAdapter.notifyDataSetChanged()
-                            Toast.makeText(this@MainActivity, "НАШЛОСЬ", Toast.LENGTH_SHORT).show()
-                        }
-                        if (vacancies.isEmpty()) {
-                            Toast.makeText(this@MainActivity, "НИЧЕГО", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(this@MainActivity, response.code().toString(), Toast.LENGTH_SHORT).show()
-                    }
+            CoroutineScope(Dispatchers.IO).launch {
+                val list = hhApi.getVacancies(editText.text.toString())
+                runOnUiThread {
+                    vacancies.clear()
+                    vacancies.addAll(list)
+                    myAdapter.notifyDataSetChanged()
                 }
-
-                override fun onFailure(call: Call<List<GithubApiModelItem>>, t: Throwable) {
-                    //Log.d("TAG", t.toString())
-                }
-            })
+            }
         }
     }
 }
