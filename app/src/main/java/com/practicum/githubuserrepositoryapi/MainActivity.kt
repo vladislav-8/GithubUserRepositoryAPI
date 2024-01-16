@@ -20,10 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
-    private val binding: ActivityMainBinding by lazy {
-        ActivityMainBinding.inflate(layoutInflater)
-    }
-
     val baseUrl = "https://api.github.com/"
 
     lateinit var editText: EditText
