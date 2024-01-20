@@ -2,77 +2,60 @@ package com.practicum.githubuserrepositoryapi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.practicum.githubuserrepositoryapi.data.GithubApi
+import com.practicum.githubuserrepositoryapi.data.AuthApi
 import com.practicum.githubuserrepositoryapi.databinding.ActivityMainBinding
-import com.practicum.githubuserrepositoryapi.domain.GithubApiModelItem
-import com.practicum.githubuserrepositoryapi.presentation.ReposAdapter
+import com.practicum.githubuserrepositoryapi.domain.post_models.AuthRequest
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
-    val baseUrl = "https://api.github.com/"
+    //username: kminchelle, kmeus4
+    //password: 0lelplR, aUTdmmmbH
 
-    lateinit var editText: EditText
-    lateinit var recyclerView: RecyclerView
-    lateinit var searchButton: Button
-
-    lateinit var myAdapter: ReposAdapter
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val hhApi = retrofit.create(GithubApi::class.java)
-
-    private val vacancies = ArrayList<GithubApiModelItem>()
+    private lateinit var binding: ActivityMainBinding
+    private val mainUrl = "https://dummyjson.com/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        editText = findViewById(R.id.editTextText)
-        recyclerView = findViewById(R.id.recyclerView)
-        searchButton = findViewById(R.id.buttonSearch)
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
 
-        searchButton.setOnClickListener {
-            search()
-        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
 
-        initRecycler()
-    }
+        val retrofit_auth = Retrofit.Builder()
+            .baseUrl(mainUrl)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    fun initRecycler() {
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(applicationContext)
-            myAdapter = ReposAdapter()
-            adapter = myAdapter
-            myAdapter.vacancy = vacancies
-        }
-    }
+        val authApi = retrofit_auth.create(AuthApi::class.java)
 
-    fun search() {
-        if (editText.text.isNotEmpty()) {
-            CoroutineScope(Dispatchers.IO).launch {
-                val list = hhApi.getVacancies(editText.text.toString())
-                runOnUiThread {
-                    vacancies.clear()
-                    vacancies.addAll(list)
-                    myAdapter.notifyDataSetChanged()
-                    Log.d("TAG", "$vacancies")
+        binding.apply {
+            button.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val user = authApi.auth(
+                        authRequest = AuthRequest(
+                            username = username.text.toString(),
+                            password = password.text.toString()
+                        )
+                    )
+                    runOnUiThread {
+                        Picasso.get().load(user.image).into(iv)
+                        firstName.text = user.firstName
+                        lastName.text = user.lastName
+                    }
                 }
             }
         }

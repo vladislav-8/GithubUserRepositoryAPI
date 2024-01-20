@@ -3,6 +3,7 @@ package com.practicum.githubuserrepositoryapi.data
 import com.practicum.githubuserrepositoryapi.domain.GithubApiModelItem
 import com.practicum.githubuserrepositoryapi.domain.GithubApiRepos
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface GithubApi {
