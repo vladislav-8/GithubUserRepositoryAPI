@@ -59,4 +59,7 @@ dependencies {
     //библиотека glide
     implementation ("com.github.bumptech.glide:glide:4.15.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.0")
+
+    //picasso
+    implementation("com.squareup.picasso:picasso:2.8")
 }
